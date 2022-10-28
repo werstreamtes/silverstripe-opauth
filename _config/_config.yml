@@ -1,15 +1,11 @@
 ---
 Name: silverstripe-opauth
-After: 'framework/*','cms/*'
 ---
-# YAML configuration for SilverStripe
-# See http://doc.silverstripe.org/framework/en/topics/configuration
-# Caution: Indentation through two spaces, not tabs
-OpauthAuthenticator:
+WSE\Opauth\OpauthAuthenticator:
   opauth_settings:
     security_iteration: 500
     security_timeout: '2 minutes'
     callback_transport: 'session'
-Member:
+SilverStripe\Security\Member:
   has_many:
-    OpauthIdentities: OpauthIdentity
+    OpauthIdentities: WSE\Opauth\OpauthIdentity

@@ -1,5 +1,16 @@
 <?php
 
+namespace WSE\Opauth;
+
+use InvalidArgumentException;
+use LogicException;
+use OpauthStrategy;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Security\LoginForm;
+
 /**
  * OpauthLoginForm
  * The form presented to users for signing in with an Opauth strategy.
@@ -24,9 +35,9 @@ class OpauthLoginForm extends LoginForm {
 		$authenticator_class = 'OpauthAuthenticator';
 
 	private static
-		$allowed_actions = array(
+		$allowed_actions = [
 			'httpSubmission',
-		);
+    ];
 
 	public function __construct($controller, $name) {
 		parent::__construct($controller, $name, $this->getFields(), $this->getActions());
@@ -38,8 +49,9 @@ class OpauthLoginForm extends LoginForm {
 	 * Use the same session key as MemberLoginForm for x-compat
 	 */
 	public function configureBackURL() {
+        $session = $this->controller->getRequest()->getSession();
 		if($backURL = $this->controller->request->param('BackURL')) {
-			Session::set('BackURL', $backURL);
+			$session->set('BackURL', $backURL);
 		}
 	}
 
@@ -100,14 +112,14 @@ class OpauthLoginForm extends LoginForm {
 
 	/**
 	 * Global endpoint for handleStrategy - all strategy actions point here.
-	 * @throws LogicException This should not be directly called.
-	 * @throws InvalidArgumentException The strategy must be valid and existent
 	 * @param string $funcName The bound function name from addWrapperMethod
 	 * @param array $data Standard data param as part of form submission
 	 * @param OpauthLoginForm $form
-	 * @param SS_HTTPRequest $request
-	 * @return ViewableData
-	 */
+	 * @param HTTPRequest $request
+	 * @return \SilverStripe\Control\HTTPResponse
+	 * @throws InvalidArgumentException The strategy must be valid and existent
+	 * @throws LogicException This should not be directly called.
+     */
 	public function handleStrategy($funcName, $data, $form, $request) {
 		if(func_num_args() < 4) {
 			throw new LogicException('Must be called with a strategy handler');
@@ -136,4 +148,13 @@ class OpauthLoginForm extends LoginForm {
 		return OpauthAuthenticator::get_name();
 	}
 
+    protected function getFormFields()
+    {
+        // TODO: Implement getFormFields() method.
+    }
+
+    protected function getFormActions()
+    {
+        // TODO: Implement getFormActions() method.
+    }
 }

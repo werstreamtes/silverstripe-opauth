@@ -4,10 +4,10 @@ After: framework/routes#rootroutes
 ---
 # Config weirdness - confusing.
 # Remember to replicate this path with no slashes in the Director rules.
-OpauthController:
+WSE\Opauth\OpauthController:
   opauth_path: '/opauth/'
-Director:
+SilverStripe\Control\Director:
   rules:
-    'opauth/strategy/$Strategy/$StrategyMethod': 'OpauthController'
-    'opauth/strategy/$Strategy': 'OpauthController'
-    'opauth': 'OpauthController'
+    'opauth/strategy/$Strategy/$StrategyMethod': 'WSE\Opauth\OpauthController'
+    'opauth/strategy/$Strategy': 'WSE\Opauth\OpauthController'
+    'opauth': 'WSE\Opauth\OpauthController'
