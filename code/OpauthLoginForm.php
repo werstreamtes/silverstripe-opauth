@@ -8,7 +8,6 @@ use OpauthStrategy;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
@@ -26,90 +25,12 @@ use SilverStripe\Security\LoginForm;
 class OpauthLoginForm extends LoginForm
 {
 
-    private
-        /*
-         * @var boolean
-         */
-        $_strategiesDefined = false;
-
-    protected
-        /**
-         * @var array config
-         */
-        $authenticator_class = 'OpauthAuthenticator';
-
-    private static $allowed_actions = [
-        'httpSubmission'
-    ];
+    public $authenticator_class = 'WSE\\Opauth\\OpauthAuthenticator';
 
     public function __construct($controller, $name)
     {
-        parent::__construct($controller, $name, $this->getFields(), $this->getActions());
+        parent::__construct($controller, $name, $this->getFormFields(), $this->getFormActions());
         $this->configureBackURL();
-    }
-
-    /**
-     * Handle any backURL. Uses sessions as state gets lost through OAuth flow.
-     * Use the same session key as MemberLoginForm for x-compat
-     */
-    public function configureBackURL()
-    {
-        if ($backURL = $this->controller->getRequest()->param('BackURL')) {
-            $this->controller->getRequest()->getSession()->set('BackURL', $backURL);
-        }
-    }
-
-    /**
-     * Override httpSubmission so we definitely have strategy handlers.
-     * This is because Form::httpSubmission is directly called.
-     * @throws HTTPResponse_Exception
-     */
-    public function httpSubmission($request): HTTPResponse
-    {
-        $this->defineStrategyHandlers();
-        return parent::getRequestHandler()->httpSubmission($request);
-    }
-
-    /**
-     * Channel several unknown strategies in to one handler
-     */
-    protected function defineStrategyHandlers()
-    {
-        if (!$this->_strategiesDefined) {
-            foreach ($this->getStrategies() as $strategyClass) {
-                $strategyMethod = 'handleStrategy' . $strategyClass;
-                $this->addWrapperMethod($strategyMethod, 'handleStrategy');
-            }
-            $this->_strategiesDefined = true;
-        }
-    }
-
-    /**
-     * Ensure AuthenticationMethod is set to tell Security which form to process
-     * Very important for multi authenticator form setups.
-     * @return FieldList
-     */
-    protected function getFields(): FieldList
-    {
-        return new FieldList(
-            new HiddenField('AuthenticationMethod', null, $this->authenticator_class)
-        );
-    }
-
-    /**
-     * Provide an action button to be clicked per strategy
-     * @return FieldList
-     */
-    protected function getActions(): FieldList
-    {
-        $actions = new FieldList();
-        foreach ($this->getStrategies() as $strategyClass) {
-            $strategyMethod = 'handleStrategy' . $strategyClass;
-            $fa = new FormAction($strategyMethod, $strategyClass);
-            $fa->setUseButtonTag(true);
-            $actions->push($fa);
-        }
-        return $actions;
     }
 
     /**
@@ -121,22 +42,55 @@ class OpauthLoginForm extends LoginForm
     }
 
     /**
+     * Handle any backURL. Uses sessions as state gets lost through OAuth flow.
+     * Use the same session key as MemberLoginForm for x-compat.
+     */
+    public function configureBackURL()
+    {
+        if ($backURL = $this->controller->getRequest()->param('BackURL')) {
+            $this->controller->getRequest()->getSession()->set('BackURL', $backURL);
+        }
+    }
+
+    /**
+     * Ensure AuthenticationMethod is set to tell Security which form to process
+     * Very important for multi authenticator form setups.
+     * @return FieldList
+     */
+    protected function getFormFields(): FieldList
+    {
+        $fields = FieldList::create(
+            HiddenField::create('AuthenticationMethod', null, $this->authenticator_class, $this)
+        );
+        $this->extend('updateFormFields', $fields);
+        return $fields;
+    }
+
+    /**
+     * Provide an action button to be clicked per strategy.
+     * @return FieldList
+     */
+    protected function getFormActions(): FieldList
+    {
+        $actions = FieldList::create();
+        foreach ($this->getStrategies() as $strategyClass) {
+            $fa = FormAction::create('handleStrategy' . $strategyClass, $strategyClass);
+            $actions->push($fa);
+        }
+
+        $this->extend('updateFormActions', $actions);
+        return $actions;
+    }
+
+    /**
      * Global endpoint for handleStrategy - all strategy actions point here.
      * @param string $funcName The bound function name from addWrapperMethod
-     * @param array $data Standard data param as part of form submission
-     * @param OpauthLoginForm $form
-     * @param HTTPRequest $request
      * @return HTTPResponse
-     * @throws InvalidArgumentException The strategy must be valid and existent
-     * @throws LogicException This should not be directly called.
      */
-    public function handleStrategy($funcName, $data, $form, $request)
+    public function handleStrategy(string $funcName): HTTPResponse
     {
-        if (func_num_args() < 4) {
-            throw new LogicException('Must be called with a strategy handler');
-        }
         // Trim handleStrategy from the function name:
-        $strategy = substr($funcName, strlen('handleStrategy')) . 'Strategy';
+        $strategy = $funcName . 'Strategy';
 
         // Check the strategy is good
         if (!class_exists($strategy) || $strategy instanceof OpauthStrategy) {
@@ -151,22 +105,41 @@ class OpauthLoginForm extends LoginForm
         );
     }
 
+    public function hasMethod($method)
+    {
+        if (strpos($method, 'handleStrategy') === 0) {
+            $providers = $this->getStrategies();
+            $name = substr($method, strlen('handleStrategy'));
+
+            if (in_array($name, $providers)) {
+                return true;
+            }
+        }
+
+        return parent::hasMethod($method);
+    }
+
+    public function __call($method, $args)
+    {
+        if (strpos($method, 'handleStrategy') === 0) {
+            $providers = $this->getStrategies();
+            $name = substr($method, strlen('handleStrategy'));
+
+            if (in_array($name, $providers)) {
+                return $this->handleStrategy($name);
+            }
+        }
+
+        return parent::__call($method, $args);
+    }
+
     /**
      * The authenticator name, used in templates
      * @return string
      */
-    public function getAuthenticatorName()
+    public function getAuthenticatorName(): string
     {
         return OpauthAuthenticator::get_name();
     }
 
-    protected function getFormFields()
-    {
-        // TODO: Implement getFormFields() method.
-    }
-
-    protected function getFormActions()
-    {
-        // TODO: Implement getFormActions() method.
-    }
 }

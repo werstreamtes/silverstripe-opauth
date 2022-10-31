@@ -4,8 +4,11 @@ namespace WSE\Opauth;
 
 use Opauth;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
+use SilverStripe\ORM\ValidationResult;
+use SilverStripe\Security\Authenticator;
+use SilverStripe\Security\Member;
 
 /**
  * Base authenticator for SilverStripe Opauth module.
@@ -13,16 +16,14 @@ use SilverStripe\Security\MemberAuthenticator\MemberAuthenticator;
  * @author Dan Hensby <@dhensby>
  * @copyright Copyright (c) 2013, Better Brief LLP
  */
-class OpauthAuthenticator extends MemberAuthenticator
+class OpauthAuthenticator implements Authenticator
 {
 
-    private static
-        /**
-         * @var Opauth Persistent Opauth instance.
-         */
-        $opauth;
-
-    protected static $config = [];
+    /**
+     * @var Opauth Persistent Opauth instance.
+     */
+    private static $opauth;
+    public static $config = [];
 
     public function __construct()
     {
@@ -46,14 +47,14 @@ class OpauthAuthenticator extends MemberAuthenticator
      */
     public static function get_opauth_config($mergeConfig = []): array
     {
-        return array_merge(
-            [
-                'path' => OpauthController::get_path(),
-                'callback_url' => OpauthController::get_callback_path(),
-            ],
-            self::$config['Strategy'],
-            $mergeConfig
-        );
+        if (empty(self::$config)) {
+            self::$config = Config::inst()->get(__CLASS__, 'opauth_settings');
+        }
+
+        return array_merge([
+            'path' => OpauthController::get_path(),
+            'callback_url' => OpauthController::get_callback_path(),
+        ], self::$config, $mergeConfig);
     }
 
     /**
@@ -100,4 +101,38 @@ class OpauthAuthenticator extends MemberAuthenticator
         return _t('OpauthAuthenticator.TITLE', 'Social Login');
     }
 
+    public function supportedServices(): int
+    {
+        return Authenticator::LOGIN;
+    }
+
+    public function getLoginHandler($link)
+    {
+        return LoginHandler::create($link, $this);
+    }
+
+    public function getLogOutHandler($link)
+    {
+        // TODO: Implement getLogOutHandler() method.
+    }
+
+    public function getChangePasswordHandler($link)
+    {
+        // TODO: Implement getChangePasswordHandler() method.
+    }
+
+    public function getLostPasswordHandler($link)
+    {
+        // TODO: Implement getLostPasswordHandler() method.
+    }
+
+    public function authenticate(array $data, HTTPRequest $request, ValidationResult &$result = null)
+    {
+        // TODO: Implement authenticate() method.
+    }
+
+    public function checkPassword(Member $member, $password, ValidationResult &$result = null)
+    {
+        // TODO: Implement checkPassword() method.
+    }
 }

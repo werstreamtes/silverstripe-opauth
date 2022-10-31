@@ -47,7 +47,7 @@ class OpauthRegisterForm extends Form
 
     /**
      * setRequiredFields
-     * Resets everything if the fields change
+     * Resets everything if the fields change.
      */
     public function setRequiredFields($fields): OpauthRegisterForm
     {
@@ -70,7 +70,7 @@ class OpauthRegisterForm extends Form
     }
 
     /**
-     * Uses the field_source defined, or falls back to the Member's getCMSFields
+     * Uses the field_source defined, or falls back to the Member's getCMSFields.
      * @return FieldList
      */
     public function getFieldSource(): FieldList
@@ -82,7 +82,7 @@ class OpauthRegisterForm extends Form
             }
             return $fields;
         }
-        return new FieldList(singleton('Member')->getCMSFields()->dataFields());
+        return FieldList::create(singleton('Member')->getCMSFields()->dataFields());
     }
 
     /**
@@ -102,14 +102,12 @@ class OpauthRegisterForm extends Form
 
     /**
      * Get actions
-     * Points to a controller action
+     * Points to a controller action.
      * @return FieldList
      */
     public function getActions(): FieldList
     {
-        $actions = new FieldList([
-            new FormAction('doCompleteRegister', 'Complete'),
-        ]);
+        $actions = FieldList::create([FormAction::create('doCompleteRegister', 'Complete')]);
         $this->extend('updateActions', $actions);
         return $actions;
     }
@@ -123,7 +121,7 @@ class OpauthRegisterForm extends Form
     }
 
     /**
-     * Populates the form somewhat intelligently
+     * Populates the form somewhat intelligently.
      * @param HTTPRequest|null $request Any request
      * @param Member|null $member Any member
      * @param array|null $required Any validation messages
@@ -150,7 +148,7 @@ class OpauthRegisterForm extends Form
     }
 
     /**
-     * Set fail-over data, so a user can refresh without losing his or her data
+     * Set fail-over data, so a user can refresh without losing his or her data.
      * @param mixed $data Any type usable with $this->loadDataFrom
      */
     public function setSessionData($data)
@@ -159,24 +157,12 @@ class OpauthRegisterForm extends Form
         return $this;
     }
 
+    /**
+     * @return array|mixed|null
+     */
     public function getSessionData()
     {
         return $this->getSession()->get($this->class . '.data');
-    }
-
-    public function clearSessionData()
-    {
-        $this->getSession()->clear($this->class . '.data');
-        return $this;
-    }
-
-    /**
-     * mockErrors
-     * Uses a very nasty trick to dynamically create some required field errors
-     */
-    public function mockErrors()
-    {
-        $this->validator->validate();
     }
 
 }

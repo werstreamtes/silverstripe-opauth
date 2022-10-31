@@ -18,13 +18,15 @@ use SilverStripe\Security\Member;
 class OpauthIdentity extends DataObject
 {
 
+    private static $table_name = 'OpauthIdentity';
+
     private static
         $db = [
         'UID' => 'Varchar(255)',
         'Provider' => 'Varchar(45)',
     ],
         $has_one = [
-        'Member' => 'Member',
+        'Member' => Member::class,
     ],
         $summary_fields = [
         'Member.Email' => 'MemberEmail',
@@ -66,12 +68,10 @@ class OpauthIdentity extends DataObject
 
         $auth = $oaResponse['auth'];
 
-        $do = OpauthIdentity::get()->filter(
-            [
-                'Provider' => $auth['provider'],
-                'UID' => $auth['uid'],
-            ]
-        )->first();
+        $do = OpauthIdentity::get()->filter([
+            'Provider' => $auth['provider'],
+            'UID' => $auth['uid'],
+        ])->first();
 
         if (!$do || !$do->exists()) {
             $do = new OpauthIdentity();
@@ -149,12 +149,12 @@ class OpauthIdentity extends DataObject
         $record = $this->getMemberRecordFromAuth();
 
         if (empty($record['Email'])) {
-            $member = new Member();
+            $member = Member::create();
         } else {
             $member = Member::get()->filter('Email', $record['Email'])->first();
 
             if (!$member) {
-                $member = new Member();
+                $member = Member::create();
             }
         }
 
@@ -193,8 +193,9 @@ class OpauthIdentity extends DataObject
 
     /**
      * @param array $auth
+     * @return OpauthIdentity
      */
-    public function setAuthSource($auth): OpauthIdentity
+    public function setAuthSource(array $auth): OpauthIdentity
     {
         $this->authSource = $auth;
         unset($this->parsedRecord);

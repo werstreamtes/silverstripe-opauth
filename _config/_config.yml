@@ -9,3 +9,12 @@ WSE\Opauth\OpauthAuthenticator:
 SilverStripe\Security\Member:
   has_many:
     OpauthIdentities: WSE\Opauth\OpauthIdentity
+
+---
+Name: Opauth injector
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\Security:
+    properties:
+      Authenticators:
+        opauth: '%$WSE\Opauth\OpauthAuthenticator'
