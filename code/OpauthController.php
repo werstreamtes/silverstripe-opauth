@@ -57,12 +57,12 @@ class OpauthController extends ContentController
         $registerForm;
 
     /**
-     * Fake a Page_Controller by using that class as a failover
+     * Fake a PageController by using that class as a failover
      */
     public function __construct($dataRecord = null)
     {
-        if (class_exists('Page_Controller')) {
-            $dataRecord = new Page_Controller($dataRecord);
+        if (class_exists('PageController')) {
+            $dataRecord = new PageController($dataRecord);
         }
         parent::__construct($dataRecord);
     }
