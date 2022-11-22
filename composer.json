@@ -1,6 +1,6 @@
 {
 	"name": "betterbrief/silverstripe-opauth",
-	"type": "silverstripe-module",
+	"type": "silverstripe-vendormodule",
 	"description": "SilverStripe 3.1 OpAuth module. See: http://opauth.org/",
 	"keywords": ["silverstripe", "social", "opauth", "oauth", "login"],
 	"homepage": "https://github.com/BetterBrief/silverstripe-opauth",
