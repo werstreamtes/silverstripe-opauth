@@ -8,7 +8,7 @@ WSE\Opauth\OpauthAuthenticator:
     callback_transport: 'session'
 SilverStripe\Security\Member:
   has_many:
-    OpauthIdentities: OpauthIdentity
+    OpauthIdentities: WSE\Opauth\OpauthIdentity
 
 ---
 Name: Opauth injector
