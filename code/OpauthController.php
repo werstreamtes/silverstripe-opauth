@@ -8,9 +8,11 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationException;
+use SilverStripe\Security\IdentityStore;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
@@ -218,7 +220,10 @@ class OpauthController extends ContentController
         }
 
         //$member->logIn();
-        Security::setCurrentUser($member);
+
+        /** @var IdentityStore $identityStore */
+        $identityStore = Injector::inst()->get(IdentityStore::class);
+        $identityStore->logIn($member, true, $this->request);
 
         // Clear any identity ID
         $session->clear('OpauthIdentityID');
