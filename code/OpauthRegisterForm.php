@@ -3,8 +3,10 @@
 namespace WSE\Opauth;
 
 use InvalidArgumentException;
+use Psr\Container\NotFoundExceptionInterface;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
@@ -126,9 +128,13 @@ class OpauthRegisterForm extends Form
      * @param Member|null $member Any member
      * @param array|null $required Any validation messages
      * @return $this
+     * @throws NotFoundExceptionInterface
      */
     public function populateFromSources(HTTPRequest $request = null, Member $member = null, array $required = null)
     {
+        if (!$request) {
+            $request = Injector::inst()->get(HTTPRequest::class);
+        }
         $session = $request->getSession();
         $dataPath = "FormInfo.{$this->FormName()}.data";
         if (isset($member)) {
