@@ -162,7 +162,7 @@ class OpauthController extends ContentController
             $validationResult = $member->validate();
             if (!$validationResult->isValid()) {
                 // Keep a note of the identity ID
-                $session->set('OpauthIdentityID', $identity->ID);
+                $session->set('opauth', $identity->ID);
                 // Set up the register form before it's output
                 $regForm = $this->RegisterForm();
                 $regForm->loadDataFrom($member);
@@ -226,7 +226,7 @@ class OpauthController extends ContentController
         $identityStore->logIn($member, true, $this->request);
 
         // Clear any identity ID
-        $session->clear('OpauthIdentityID');
+        $session->clear('opauth');
 
         // Clear the BackURL
         $session->clear('BackURL');
