@@ -287,7 +287,7 @@ class OpauthController extends ContentController
         $member = new Member();
         $form->saveInto($member);
         $identityID = $request->getSession()->get('OpauthIdentityID');
-        $identity = OpauthIdentity::get_by_id($identityID);
+        $identity = DataObject::get_by_id('WSE\Opauth\OpauthIdentity', $identityID);
         $validationResult = $member->validate();
         $existing = Member::get()->filter('Email', $member->Email)->first();
         $emailCollision = $existing && $existing->exists();
