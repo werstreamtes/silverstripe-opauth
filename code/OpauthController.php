@@ -240,7 +240,7 @@ class OpauthController extends ContentController
      */
     public function profilecompletion(HTTPRequest $request = null): DBHTMLText
     {
-        if (!$request->getSession()->get('OpauthIdentityID')) {
+        if (!$request->getSession()->get('opauth')) {
             Security::permissionFailure($this);
         }
         // Redirect to complete register step by adding in extra info
@@ -286,7 +286,7 @@ class OpauthController extends ContentController
     {
         $member = new Member();
         $form->saveInto($member);
-        $identityID = $request->getSession()->get('OpauthIdentityID');
+        $identityID = $request->getSession()->get('opauth');
         $identity = DataObject::get_by_id('OpauthIdentity', $identityID);
         $validationResult = $member->validate();
         $existing = Member::get()->filter('Email', $member->Email)->first();
