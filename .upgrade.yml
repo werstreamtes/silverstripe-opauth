@@ -1,2 +1,10 @@
 mappings:
+  OpauthAuthenticator: WSE\Opauth\OpauthAuthenticator
+  OpauthController: WSE\Opauth\OpauthController
   OpauthIdentity: WSE\Opauth\OpauthIdentity
+  OpauthLoginForm: WSE\Opauth\OpauthLoginForm
+  LoginHandler: WSE\Opauth\LoginHandler
+  OpauthRegisterForm: WSE\Opauth\OpauthRegisterForm
+  OpauthResponseHelper: WSE\Opauth\OpauthResponseHelper
+  OpauthValidationException: WSE\Opauth\OpauthValidationException
+  OpauthValidator: WSE\Opauth\OpauthValidator
