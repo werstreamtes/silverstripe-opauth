@@ -119,7 +119,11 @@ class OpauthRegisterForm extends Form
      */
     public function getValidator()
     {
-        return new OpauthValidator($this->requiredFields);
+        $validator = parent::getValidator();
+        if(!$validator) {
+            $validator = new OpauthValidator($this->requiredFields);
+        }
+        return $validator;
     }
 
     /**
