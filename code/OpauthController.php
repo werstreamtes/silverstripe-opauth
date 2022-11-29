@@ -240,7 +240,7 @@ class OpauthController extends ContentController
      */
     public function profilecompletion(HTTPRequest $request = null): DBHTMLText
     {
-        if (!$request->getSession()->get('opauth')) {
+        if (!$request->getSession()->get('OpauthIdentityID')) {
             Security::permissionFailure($this);
         }
         // Redirect to complete register step by adding in extra info
