@@ -162,7 +162,7 @@ class OpauthController extends ContentController
             $validationResult = $member->validate();
             if (!$validationResult->isValid()) {
                 // Keep a note of the identity ID
-                $session->set('opauth', $identity->ID);
+                $session->set('OpauthIdentityID', $identity->ID);
                 // Set up the register form before it's output
                 $regForm = $this->RegisterForm();
                 $regForm->loadDataFrom($member);
@@ -226,7 +226,7 @@ class OpauthController extends ContentController
         $identityStore->logIn($member, true, $this->request);
 
         // Clear any identity ID
-        $session->clear('opauth');
+        $session->clear('OpauthIdentityID');
 
         // Clear the BackURL
         $session->clear('BackURL');
@@ -286,8 +286,8 @@ class OpauthController extends ContentController
     {
         $member = new Member();
         $form->saveInto($member);
-        $identityID = $request->getSession()->get('opauth');
-        $identity = DataObject::get_by_id('OpauthIdentity', $identityID);
+        $identityID = $request->getSession()->get('OpauthIdentityID');
+        OpauthIdentity::get_by_id($identityID);
         $validationResult = $member->validate();
         $existing = Member::get()->filter('Email', $member->Email)->first();
         $emailCollision = $existing && $existing->exists();
