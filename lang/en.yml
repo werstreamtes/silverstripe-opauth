@@ -1,10 +1,10 @@
 en:
-  OpauthAuthenticator:
+  WSE\Opauth\OpauthAuthenticator:
     TITLE: 'Social Login'
-  OpauthLoginForm:
+  WSE\Opauth\OpauthLoginForm:
     OAUTHFAILURE: 'There was a problem getting a response from {provider}.'
-  OpauthRegisterForm:
+  WSE\Opauth\OpauthRegisterForm:
     ERROREMAILTAKEN: 'It looks like this email has already been used'
-  OpauthController:
+  WSE\Opauth\OpauthController:
     TITLE: 'Social login'
     PROFILECOMPLETIONTITLE: 'Complete your profile to register'
