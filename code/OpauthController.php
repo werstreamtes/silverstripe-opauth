@@ -297,12 +297,13 @@ class OpauthController extends ContentController
             $form->setRequiredFields($errors);
             // Mandatory check on the email address
             if ($emailCollision) {
-                $form->addErrorMessage('Email', _t(
+                $form->sessionFieldError(_t(
                     'OpauthRegisterForm.ERROREMAILTAKEN',
                     'It looks like this email has already been used'
-                ), 'required');
+                ), 'Email');
+                return $this->redirectBack();
             }
-            return $this->redirect('profilecompletion');
+            return $this->redirect($this->Link('profilecompletion'));
         } // If valid then write and redirect
         else {
             $member->extend('onBeforeOpauthRegister');
