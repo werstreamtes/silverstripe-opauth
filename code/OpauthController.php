@@ -166,7 +166,7 @@ class OpauthController extends ContentController
                 // Set up the register form before it's output
                 $regForm = $this->RegisterForm();
                 $regForm->loadDataFrom($member);
-                $regForm->setSessionData($member);
+                $regForm->setSessionData($regForm->getData());
                 $regForm->getValidator()->validate();
                 return $this->redirect($this->Link('profilecompletion'));
             } else {
