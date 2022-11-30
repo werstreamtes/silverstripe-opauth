@@ -163,7 +163,7 @@ class OpauthRegisterForm extends Form
      */
     public function setSessionData($data)
     {
-        $this->getSession()->set($this->class . '.data', $data);
+        $this->getSession()->set(static::class . '.data', $data);
         return $this;
     }
 
@@ -172,7 +172,7 @@ class OpauthRegisterForm extends Form
      */
     public function getSessionData()
     {
-        return $this->getSession()->get($this->class . '.data');
+        return $this->getSession()->get(static::class . '.data');
     }
 
 }

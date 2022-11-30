@@ -163,7 +163,6 @@ class OpauthController extends ContentController
             if (!$validationResult->isValid()) {
                 // Keep a note of the identity ID
                 $session->set('OpauthIdentityID', $identity->ID);
-                $session->save($request);
                 // Set up the register form before it's output
                 $regForm = $this->RegisterForm();
                 $regForm->loadDataFrom($member);
