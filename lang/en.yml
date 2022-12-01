@@ -5,8 +5,7 @@ en:
     OAUTHFAILURE: 'There was a problem getting a response from {provider}.'
   WSE\Opauth\OpauthRegisterForm:
     ERROREMAILTAKEN: 'It looks like this email has already been used'
+    COMPLETE: 'Complete'
   WSE\Opauth\OpauthController:
     TITLE: 'Social login'
     PROFILECOMPLETIONTITLE: 'Complete your profile to register'
-  WSE\Opauth\OpauthRegisterForm:
-    COMPLETE: 'Complete'
