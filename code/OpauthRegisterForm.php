@@ -109,8 +109,9 @@ class OpauthRegisterForm extends Form
      */
     public function getActions(): FieldList
     {
-        $actions = FieldList::create([FormAction::create('doCompleteRegister', 'Complete')]);
+    	$actions = FieldList::create([FormAction::create('doCompleteRegister',  _t('OpauthRegisterForm.COMPLETE', 'Complete'))]);
         $this->extend('updateActions', $actions);
+    
         return $actions;
     }
 
