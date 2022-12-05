@@ -297,8 +297,8 @@ class OpauthController extends ContentController
             $form->setRequiredFields($errors);
             // Mandatory check on the email address
             if ($emailCollision) {
-                $form->sessionFieldError(_t(
-                    'OpauthRegisterForm.ERROREMAILTAKEN',
+                $form->sessionFieldError(_t(OpauthRegisterForm::class .
+                    '.ERROREMAILTAKEN',
                     'It looks like this email has already been used'
                 ), 'Email');
                 return $this->redirectBack();
@@ -400,8 +400,8 @@ class OpauthController extends ContentController
         $message = '';
         switch ($e->getCode()) {
             case 1: // provider error
-                $message = _t(
-                    'OpauthLoginForm.OAUTHFAILURE',
+                $message = _t(OpauthLoginForm:class .
+                    '.OAUTHFAILURE',
                     'There was a problem logging in with {provider}.',
                     [
                         'provider' => $data['provider'],
@@ -410,8 +410,8 @@ class OpauthController extends ContentController
                 break;
             case 2: // validation error
             case 3: // invalid auth response
-                $message = _t(
-                    'OpauthLoginForm.RESPONSEVALIDATIONFAILURE',
+                $message = _t(OpauthLoginForm::class .
+                    '.RESPONSEVALIDATIONFAILURE',
                     'There was a problem logging in - {message}',
                     [
                         'message' => $e->getMessage(),
@@ -475,9 +475,9 @@ class OpauthController extends ContentController
     function Title(): string
     {
         if ($this->action == 'profilecompletion') {
-            return _t('OpauthController.PROFILECOMPLETIONTITLE', 'Complete your profile');
+            return _t(__CLASS__ . '.PROFILECOMPLETIONTITLE', 'Complete your profile');
         }
-        return _t('OpauthController.TITLE', 'Social Login');
+        return _t(__CLASS__ . '.TITLE', 'Social Login');
     }
 
     /**

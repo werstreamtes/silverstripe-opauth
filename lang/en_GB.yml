@@ -9,4 +9,3 @@ en_GB:
   WSE\Opauth\OpauthController:
     TITLE: 'Social login'
     PROFILECOMPLETIONTITLE: 'Complete your profile to register'
-  WSE\Opauth\OpauthRegisterForm:

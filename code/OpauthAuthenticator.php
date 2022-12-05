@@ -98,7 +98,7 @@ class OpauthAuthenticator implements Authenticator
      */
     public static function get_name(): string
     {
-        return _t('OpauthAuthenticator.TITLE', 'Social Login');
+        return _t(__class__ . '.TITLE', 'Social Login');
     }
 
     public function supportedServices(): int
