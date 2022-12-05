@@ -400,7 +400,7 @@ class OpauthController extends ContentController
         $message = '';
         switch ($e->getCode()) {
             case 1: // provider error
-                $message = _t(OpauthLoginForm:class .
+                $message = _t(OpauthLoginForm::class .
                     '.OAUTHFAILURE',
                     'There was a problem logging in with {provider}.',
                     [
