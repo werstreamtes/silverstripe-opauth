@@ -5,7 +5,7 @@ namespace WSE\Opauth;
 use Opauth;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Authenticator;
 use SilverStripe\Security\Member;
@@ -19,16 +19,12 @@ use SilverStripe\Security\Member;
 class OpauthAuthenticator implements Authenticator
 {
 
+    use Configurable;
+
     /**
      * @var Opauth Persistent Opauth instance.
      */
     private static $opauth;
-    public static $config = [];
-
-    public function __construct()
-    {
-        self::$config = Config::inst()->get(__CLASS__, 'opauth_settings');
-    }
 
     /**
      * get_enabled_strategies
@@ -36,7 +32,7 @@ class OpauthAuthenticator implements Authenticator
      */
     public static function get_enabled_strategies(): array
     {
-        $strategyConfig = self::$config['Strategy'];
+        $strategyConfig =  self::config()->opauth_settings['Strategy'];
         return array_keys($strategyConfig);
     }
 
@@ -47,14 +43,11 @@ class OpauthAuthenticator implements Authenticator
      */
     public static function get_opauth_config($mergeConfig = []): array
     {
-        if (empty(self::$config)) {
-            self::$config = Config::inst()->get(__CLASS__, 'opauth_settings');
-        }
-
+        $config = self::config();
         return array_merge([
             'path' => OpauthController::get_path(),
             'callback_url' => OpauthController::get_callback_path(),
-        ], self::$config, $mergeConfig);
+        ], $config->opauth_settings, $mergeConfig);
     }
 
     /**
