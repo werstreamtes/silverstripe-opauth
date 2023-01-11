@@ -158,6 +158,8 @@ class OpauthIdentity extends DataObject
             }
         }
 
+        $member->PasswordEncryption = "blowfish";
+
         if ($settings['linkOnMatch'] && $member->isInDB()) {
             $this->MemberID = $member->ID;
         }
