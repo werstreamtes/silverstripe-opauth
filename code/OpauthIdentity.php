@@ -7,6 +7,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\ArrayLib;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 
 /**
  * OpauthIdentity
@@ -158,7 +159,7 @@ class OpauthIdentity extends DataObject
             }
         }
 
-        $member->PasswordEncryption = "blowfish";
+        $member->PasswordEncryption = Security::config()->get("password_encryption_algorithm");
 
         if ($settings['linkOnMatch'] && $member->isInDB()) {
             $this->MemberID = $member->ID;
