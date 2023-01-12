@@ -159,7 +159,7 @@ class OpauthIdentity extends DataObject
             }
         }
 
-        $member->PasswordEncryption = Security::config()->get("password_encryption_algorithm");
+        //$member->PasswordEncryption = Security::config()->get("password_encryption_algorithm");
 
         if ($settings['linkOnMatch'] && $member->isInDB()) {
             $this->MemberID = $member->ID;
